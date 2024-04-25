@@ -14,16 +14,21 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class Bid extends AuditedEntity {
+public class Bid extends AuditedEntity implements Comparable<Bid> {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  @NotNull private double amount;
+  @NotNull private Double amount;
 
   @ManyToOne(optional = false)
   private User user;
 
   @ManyToOne(optional = false)
   private Auction auction;
+
+  @Override
+  public int compareTo(Bid bid) {
+    return this.amount.compareTo(bid.amount);
+  }
 }

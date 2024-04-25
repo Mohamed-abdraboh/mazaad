@@ -7,13 +7,16 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.PriorityQueue;
 
 @Setter
 @Getter
-public class AuctionDto {
-  @NotNull private LocalDateTime startDate;
-  @NotNull private LocalDateTime endDate;
-  @NotNull private double startPrice;
-  @OneToOne private ItemsOfferDto itemsOffer;
+public class AuctionResponse {
+
+  private LocalDateTime startDateTime;
+  private LocalDateTime endDateTime;
+  private Double startPrice;
+  private ItemsOfferDto itemsOffer;
   private String description;
+  private PriorityQueue<Double> bids;
 }

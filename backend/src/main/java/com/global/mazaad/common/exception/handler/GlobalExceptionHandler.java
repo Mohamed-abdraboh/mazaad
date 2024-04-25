@@ -1,14 +1,23 @@
 package com.global.mazaad.common.exception.handler;
 
+import com.global.mazaad.Auction.exception.AuctionEndedException;
+import com.global.mazaad.Auction.exception.AuctionNotFoundException;
+import com.global.mazaad.bid.exception.InvalidBidAmountException;
 import com.global.mazaad.common.exception.dto.ApiErrorResponse;
+import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import java.util.HashSet;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RestControllerAdvice
@@ -24,7 +33,11 @@ public class GlobalExceptionHandler {
       final MethodArgumentNotValidException exception) {
     String message =
         exception.getBindingResult().getAllErrors().stream()
-            .map(error -> String.format("{ ErrorMessage: %s }", error.getDefaultMessage()))
+            .map(
+                error ->
+                    String.format(
+                        "{ Attribute: %s, ErrorMessage: %s }",
+                        ((FieldError) error).getField(), error.getDefaultMessage()))
             .toList()
             .toString();
 
@@ -42,15 +55,68 @@ public class GlobalExceptionHandler {
   @ResponseStatus(HttpStatus.BAD_REQUEST)
   public ApiErrorResponse handleConstraintViolationException(
       final ConstraintViolationException exception) {
-    String message =
-        "Validation failed. Please check your input and ensure all required fields are provided correctly.";
+    Set<String> missingAttributes = new HashSet<>();
+    Set<String> constraintViolations = new HashSet<>();
+
+    exception
+        .getConstraintViolations()
+        .forEach(
+            constraintViolation -> {
+              if (constraintViolation.getPropertyPath() != null) {
+                missingAttributes.add(constraintViolation.getPropertyPath().toString());
+              }
+              if (constraintViolation.getMessage() != null) {
+                constraintViolations.add(constraintViolation.getMessage());
+              }
+            });
 
     ApiErrorResponse apiErrorResponse =
-        apiErrorResponseCreator.buildResponse(message, HttpStatus.BAD_REQUEST);
+        apiErrorResponseCreator.buildResponse(
+            "Missing attribute(s): "
+                + String.join(", ", missingAttributes)
+                + ". Constraint violation(s): "
+                + String.join(", ", constraintViolations),
+            HttpStatus.BAD_REQUEST);
+
     log.error(
-        "Handle constraint violation exception: failed: message: {}, debugMessage: {}.",
-        message,
+        "Handling constraint violation exception: failed: missing attributes: {}, constraint violations: {}, debugMessage: {}.",
+        String.join(", ", missingAttributes),
+        String.join(", ", constraintViolations),
         errorDebugMessageCreator.buildErrorDebugMessage(exception));
+
+    return apiErrorResponse;
+  }
+
+  @ExceptionHandler(AuctionEndedException.class)
+  @ResponseStatus(HttpStatus.FORBIDDEN)
+  public ApiErrorResponse handleAuctionEndedException(final AuctionEndedException exception) {
+
+    ApiErrorResponse apiErrorResponse =
+        apiErrorResponseCreator.buildResponse(exception.getMessage(), HttpStatus.FORBIDDEN);
+    log.error(exception.getMessage(), errorDebugMessageCreator.buildErrorDebugMessage(exception));
+
+    return apiErrorResponse;
+  }
+
+  @ExceptionHandler(AuctionNotFoundException.class)
+  @ResponseStatus(HttpStatus.NOT_FOUND)
+  public ApiErrorResponse handleAuctionNotFoundException(final AuctionNotFoundException exception) {
+
+    ApiErrorResponse apiErrorResponse =
+        apiErrorResponseCreator.buildResponse(exception.getMessage(), HttpStatus.NOT_FOUND);
+    log.error(exception.getMessage(), errorDebugMessageCreator.buildErrorDebugMessage(exception));
+
+    return apiErrorResponse;
+  }
+
+  @ExceptionHandler(InvalidBidAmountException.class)
+  @ResponseStatus(HttpStatus.BAD_REQUEST)
+  public ApiErrorResponse handleInvalidBidAmountException(
+      final InvalidBidAmountException exception) {
+
+    ApiErrorResponse apiErrorResponse =
+        apiErrorResponseCreator.buildResponse(exception.getMessage(), HttpStatus.BAD_REQUEST);
+    log.error(exception.getMessage(), errorDebugMessageCreator.buildErrorDebugMessage(exception));
 
     return apiErrorResponse;
   }

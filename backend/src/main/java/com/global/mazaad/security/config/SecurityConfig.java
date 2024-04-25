@@ -41,6 +41,8 @@ public class SecurityConfig {
                     .authenticated()
                     .requestMatchers(SecurityConstants.AUCTIONS_URL)
                     .hasRole("ADMIN")
+                    .requestMatchers(SecurityConstants.BIDS_URL)
+                    .hasRole("ADMIN")
                     .anyRequest()
                     .permitAll())
         .sessionManagement(

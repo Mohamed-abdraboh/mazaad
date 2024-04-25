@@ -74,7 +74,7 @@ public class UserSecurityEndpoint {
 
   @PostMapping("/authenticate")
   public ResponseEntity<UserAuthenticationResponse> authenticate(
-      @RequestBody final UserAuthenticationRequest request) {
+     @Valid @RequestBody final UserAuthenticationRequest request) {
     //        log.info("Received authentication request for user with email = '{}'",
     // request.email());
     UserAuthenticationResponse authenticationResponse =

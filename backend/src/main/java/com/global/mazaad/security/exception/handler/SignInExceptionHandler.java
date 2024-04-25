@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @Slf4j
 @RestControllerAdvice
 @RequiredArgsConstructor
-@ControllerAdvice
 public class SignInExceptionHandler {
 
   private final ApiErrorResponseCreator apiErrorResponseCreator;

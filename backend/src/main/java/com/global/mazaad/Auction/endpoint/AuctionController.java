@@ -1,11 +1,16 @@
 package com.global.mazaad.Auction.endpoint;
-import com.global.mazaad.Auction.dto.AuctionDto;
+
+import com.global.mazaad.Auction.dto.AuctionRequest;
+import com.global.mazaad.Auction.dto.AuctionResponse;
 import com.global.mazaad.Auction.entity.Auction;
 import com.global.mazaad.Auction.service.AuctionService;
 import com.global.mazaad.itemsOffer.service.ItemsOfferService;
 import com.global.mazaad.storage.service.FileSystemStorageService;
 import io.swagger.v3.oas.annotations.Operation;
 import java.net.URI;
+import java.util.List;
+
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -23,10 +28,16 @@ public class AuctionController {
   @Operation(summary = "Create new auction.")
   @PreAuthorize("hasRole('ADMIN')")
   @PostMapping
-  public ResponseEntity<?> createAuction(@RequestBody AuctionDto auctionDto) {
-    Long auctionId = auctionService.createAuction(auctionDto);
+  public ResponseEntity<?> createAuction(@Valid @RequestBody AuctionRequest auctionRequest) {
+    Long auctionId = auctionService.createAuction(auctionRequest);
     return ResponseEntity.created(URI.create("/resources/" + auctionId))
         .body("Auction created with id " + auctionId);
+  }
+
+  @GetMapping
+  public ResponseEntity<?> getAuctions(@RequestParam(defaultValue = "10") int pageSize) {
+    List<AuctionResponse> auctionResponses = auctionService.getAuctions(pageSize);
+    return ResponseEntity.ok(auctionResponses);
   }
 
   @Operation(summary = "Delete an auction.")
@@ -41,8 +52,8 @@ public class AuctionController {
   @PreAuthorize("hasRole('ADMIN')")
   @PutMapping("/{id}")
   public ResponseEntity<?> ModifyAuction(
-      @PathVariable Long id, @RequestBody AuctionDto auctionDto) {
-    auctionService.modifyAuction(id, auctionDto);
+      @PathVariable Long id, @RequestBody AuctionRequest auctionRequest) {
+    auctionService.modifyAuction(id, auctionRequest);
     return ResponseEntity.ok("Auction updated with id +" + id);
   }
 

@@ -22,8 +22,8 @@ public class Auction extends AuditedEntity {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  @NotNull private LocalDateTime startDate;
-  @NotNull private LocalDateTime endDate;
+  @NotNull private LocalDateTime startDateTime;
+  @NotNull private LocalDateTime endDateTime;
   @NotNull private double startPrice;
 
   @OneToOne(cascade = CascadeType.ALL)
@@ -31,6 +31,6 @@ public class Auction extends AuditedEntity {
 
   private String description;
 
-  @OneToMany(mappedBy = "auction")
-  private List<Bid> bids;
+  @OneToMany(mappedBy = "auction", cascade = CascadeType.ALL)
+  private List<Bid> bids = new ArrayList<>();
 }
