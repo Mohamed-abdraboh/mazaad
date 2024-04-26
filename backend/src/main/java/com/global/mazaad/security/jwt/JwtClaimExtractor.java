@@ -20,6 +20,10 @@ public class JwtClaimExtractor {
     return extractAllClaims(jwtToken).getSubject();
   }
 
+  public String extractType(final String jwtToken) {
+    return extractAllClaims(jwtToken).get("type", String.class);
+  }
+
   public String extractEmail(final String jwtToken) {
     String userEmail = extractAllClaims(jwtToken).getSubject();
 

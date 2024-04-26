@@ -1,6 +1,6 @@
 package com.global.mazaad.bid.entity;
 
-import com.global.mazaad.Auction.entity.Auction;
+import com.global.mazaad.auction.entity.Auction;
 import com.global.mazaad.common.auditing.AuditedEntity;
 import com.global.mazaad.user.entity.User;
 import jakarta.persistence.*;

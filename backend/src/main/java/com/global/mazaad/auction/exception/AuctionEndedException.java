@@ -1,4 +1,4 @@
-package com.global.mazaad.Auction.exception;
+package com.global.mazaad.auction.exception;
 
 import java.time.LocalDateTime;
 

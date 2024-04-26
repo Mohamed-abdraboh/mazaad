@@ -1,7 +1,7 @@
 package com.global.mazaad.bid.service;
 
-import com.global.mazaad.Auction.entity.Auction;
-import com.global.mazaad.Auction.exception.AuctionEndedException;
+import com.global.mazaad.auction.entity.Auction;
+import com.global.mazaad.auction.exception.AuctionEndedException;
 import com.global.mazaad.bid.entity.Bid;
 import com.global.mazaad.bid.exception.InvalidBidAmountException;
 import lombok.RequiredArgsConstructor;

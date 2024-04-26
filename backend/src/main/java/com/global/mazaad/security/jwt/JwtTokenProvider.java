@@ -6,6 +6,8 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -33,13 +35,15 @@ public class JwtTokenProvider {
     try {
       return Jwts.builder()
           .claims(extraClaims)
+          .id(UUID.randomUUID().toString())
+          .claim("type", "ACCESS")
           .subject(userDetails.getUsername())
           .issuedAt(new Date(System.currentTimeMillis()))
           .expiration(new Date(System.currentTimeMillis() + validityInMilliseconds))
           .signWith(jwtSignKeyProvider.get(), SignatureAlgorithm.HS256)
           .compact();
     } catch (Exception exception) {
-      log.debug("Jwt token creation error", exception);
+      log.debug("Jwt accessToken creation error", exception);
       throw new JwtTokenException(exception);
     }
   }
@@ -50,7 +54,9 @@ public class JwtTokenProvider {
           .subject(userDetails.getUsername())
           .issuedAt(new Date(System.currentTimeMillis()))
           .expiration(new Date(System.currentTimeMillis() + validityRefreshTokenInMilliseconds))
-          .signWith(jwtSignKeyProvider.getRefresh(), SignatureAlgorithm.HS256)
+          .id(UUID.randomUUID().toString())
+          .claim("type", "REFRESH")
+          .signWith(jwtSignKeyProvider.get(), SignatureAlgorithm.HS256)
           .compact();
     } catch (Exception exception) {
       log.debug("Jwt refresh token creation error", exception);

@@ -3,17 +3,21 @@ package com.global.mazaad.security.endpoint;
 import com.global.mazaad.security.dto.UserAuthenticationRequest;
 import com.global.mazaad.security.dto.UserAuthenticationResponse;
 import com.global.mazaad.security.dto.UserRegistrationRequest;
+import com.global.mazaad.security.exception.JwtTokenException;
 import com.global.mazaad.security.jwt.JwtAuthenticationProvider;
 import com.global.mazaad.security.jwt.JwtBlacklist;
 import com.global.mazaad.security.jwt.JwtTokenFromAuthHeaderExtractor;
 import com.global.mazaad.security.jwt.JwtValidator;
+import com.global.mazaad.security.repository.BlockedTokenRepository;
 import com.global.mazaad.security.service.UserAuthenticationService;
 import com.global.mazaad.security.service.UserRegistrationService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.validation.annotation.Validated;
@@ -40,28 +44,6 @@ public class UserSecurityEndpoint {
 
   private final HttpServletRequest httpRequest;
 
-  //    @PostMapping("/register")
-  //    public ResponseEntity<String> register(@RequestBody final UserRegistrationRequest request) {
-  ////        log.info("Received registration request for user with email = '{}'", request.email());
-  //        emailTokenSender.sendEmailVerificationCode(request);
-  ////        log.info("Email verification token sent to the user with email = '{}'",
-  // request.email());
-  //        return ResponseEntity.ok()
-  //                .body(String.format("Email verification token sent to the user with email =
-  // %s%nIf You don't receive an email, please check your spam or may be the email address is
-  // incorrect", request.email()));
-  //    }
-
-  //    @PostMapping(value = "/confirm")
-  //    public ResponseEntity<UserRegistrationResponse> confirmEmail(@RequestBody final
-  // ConfirmEmailRequest confirmEmailRequest) {
-  //        log.info("Received email confirmation request");
-  //        UserRegistrationResponse registrationResponse =
-  // emailTokenConformer.confirmEmailByCode(confirmEmailRequest);
-  //        log.info("Email verification completed");
-  //        return new ResponseEntity<>(registrationResponse, HttpStatus.CREATED);
-  //    }
-
   private final UserRegistrationService userRegistrationService;
 
   @PostMapping("/register")
@@ -74,22 +56,27 @@ public class UserSecurityEndpoint {
 
   @PostMapping("/authenticate")
   public ResponseEntity<UserAuthenticationResponse> authenticate(
-     @Valid @RequestBody final UserAuthenticationRequest request) {
-    //        log.info("Received authentication request for user with email = '{}'",
-    // request.email());
+      @Valid @RequestBody final UserAuthenticationRequest request) {
+
     UserAuthenticationResponse authenticationResponse =
         userAuthenticationService.authenticate(request);
-    //        log.info("Authentication completed for user with email = '{}'", request.email());
+
     return ResponseEntity.ok(authenticationResponse);
   }
 
   @PostMapping("/refresh")
   public ResponseEntity<UserAuthenticationResponse> refreshToken() {
-    log.info("Received refresh token request for user");
-    var authenticationToken = jwtAuthenticationProvider.get(httpRequest);
+    log.info("Received refresh accessToken request for user");
+    UsernamePasswordAuthenticationToken authenticationToken =
+        jwtAuthenticationProvider.get(httpRequest);
     UserDetails userDetails = userDetailsService.loadUserByUsername(authenticationToken.getName());
     UserAuthenticationResponse authenticationResponse =
         userAuthenticationService.authenticate(userDetails, authenticationToken.getName());
+    String token =
+        jwtTokenFromAuthHeaderExtractor.extract(httpRequest.getHeader(HttpHeaders.AUTHORIZATION));
+    if (!jwtValidator.isRefresh(token))
+      throw new JwtTokenException("Can't refresh with access accessToken");
+      jwtBlacklist.addToBlacklist(token);
     log.info("Refresh completed for user");
     return ResponseEntity.ok(authenticationResponse);
   }

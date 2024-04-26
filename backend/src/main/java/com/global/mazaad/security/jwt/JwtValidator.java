@@ -1,5 +1,6 @@
 package com.global.mazaad.security.jwt;
 
+import com.global.mazaad.security.config.TokenType;
 import com.global.mazaad.security.exception.JwtTokenBlacklistedException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -19,6 +20,10 @@ public class JwtValidator {
     if (jwtBlacklist.contains(jwtToken)) {
       throw new JwtTokenBlacklistedException();
     }
+  }
+
+  public boolean isRefresh(String jwtToken) {
+    return jwtClaimExtractor.extractType(jwtToken).equals(TokenType.REFRESH.toString());
   }
 
   //  public void validateIfExpired(String jwtToken) {

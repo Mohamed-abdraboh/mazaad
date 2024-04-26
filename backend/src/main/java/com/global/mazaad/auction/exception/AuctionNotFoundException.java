@@ -1,4 +1,4 @@
-package com.global.mazaad.Auction.exception;
+package com.global.mazaad.auction.exception;
 
 public class AuctionNotFoundException extends RuntimeException {
   public AuctionNotFoundException(Long auctionId) {

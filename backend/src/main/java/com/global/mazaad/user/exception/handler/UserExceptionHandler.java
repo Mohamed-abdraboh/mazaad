@@ -24,8 +24,7 @@ public class UserExceptionHandler {
   @ExceptionHandler(UserNotFoundException.class)
   @ResponseStatus(HttpStatus.UNAUTHORIZED)
   public ApiErrorResponse handleUserNotFoundException(final UserNotFoundException exception) {
-    ApiErrorResponse apiErrorResponse =
-        apiErrorResponseCreator.buildResponse(exception, HttpStatus.UNAUTHORIZED);
+    ApiErrorResponse apiErrorResponse = apiErrorResponseCreator.buildResponse(exception);
     log.warn(
         "Handle user not found exception: failed: message: {}, debugMessage: {}",
         apiErrorResponse.getMessage(),
@@ -37,8 +36,7 @@ public class UserExceptionHandler {
   @ResponseStatus(HttpStatus.UNAUTHORIZED)
   public ApiErrorResponse handleUsernameNotFoundException(
       final UsernameNotFoundException exception) {
-    ApiErrorResponse apiErrorResponse =
-        apiErrorResponseCreator.buildResponse(exception, HttpStatus.UNAUTHORIZED);
+    ApiErrorResponse apiErrorResponse = apiErrorResponseCreator.buildResponse(exception);
     log.warn(
         "Handle user not found exception: failed: message: {}, debugMessage: {}",
         apiErrorResponse.getMessage(),
@@ -50,8 +48,7 @@ public class UserExceptionHandler {
   @ResponseStatus(HttpStatus.UNAUTHORIZED)
   public ApiErrorResponse handleInvalidOldPasswordException(
       final InvalidOldPasswordException exception) {
-    ApiErrorResponse apiErrorResponse =
-        apiErrorResponseCreator.buildResponse(exception, HttpStatus.UNAUTHORIZED);
+    ApiErrorResponse apiErrorResponse = apiErrorResponseCreator.buildResponse(exception);
     log.warn(
         "Handle user's invalid old password exception: failed: message: {}, debugMessage: {}",
         apiErrorResponse.getMessage(),

@@ -8,15 +8,11 @@ import org.springframework.stereotype.Service;
 @Service
 public class ApiErrorResponseCreator {
 
-  public ApiErrorResponse buildResponse(String errorMessage, HttpStatus httpStatus) {
-    return ApiErrorResponse.builder()
-        .message(errorMessage)
-        .timestamp(LocalDateTime.now())
-        .httpStatusCode(httpStatus.value())
-        .build();
+  public ApiErrorResponse buildResponse(String errorMessage) {
+    return ApiErrorResponse.builder().message(errorMessage).timestamp(LocalDateTime.now()).build();
   }
 
-  public ApiErrorResponse buildResponse(Exception exception, HttpStatus httpStatus) {
-    return buildResponse(exception.getMessage(), httpStatus);
+  public ApiErrorResponse buildResponse(Exception exception) {
+    return buildResponse(exception.getMessage());
   }
 }

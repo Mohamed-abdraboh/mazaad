@@ -12,7 +12,7 @@ public class UserRegistrationRequest {
   @NotBlank private String name;
 
   @NotBlank(message = "phoneNumber is a mandatory attribute")
-  @Pattern(regexp = "^\\[0-9]{1,3}\\s?[0-9]{3,14}$", message = "Invalid phone number")
+  @Pattern(regexp = "^\\+?[0-9]{1,3}\\s?[0-9]{3,14}$", message = "Invalid phone number")
   private String phoneNumber;
 
   @NotBlank(message = "Password is a mandatory attribute")

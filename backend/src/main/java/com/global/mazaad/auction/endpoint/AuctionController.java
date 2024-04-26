@@ -1,9 +1,9 @@
-package com.global.mazaad.Auction.endpoint;
+package com.global.mazaad.auction.endpoint;
 
-import com.global.mazaad.Auction.dto.AuctionRequest;
-import com.global.mazaad.Auction.dto.AuctionResponse;
-import com.global.mazaad.Auction.entity.Auction;
-import com.global.mazaad.Auction.service.AuctionService;
+import com.global.mazaad.auction.dto.AuctionRequest;
+import com.global.mazaad.auction.dto.AuctionResponse;
+import com.global.mazaad.auction.entity.Auction;
+import com.global.mazaad.auction.service.AuctionService;
 import com.global.mazaad.itemsOffer.service.ItemsOfferService;
 import com.global.mazaad.storage.service.FileSystemStorageService;
 import io.swagger.v3.oas.annotations.Operation;

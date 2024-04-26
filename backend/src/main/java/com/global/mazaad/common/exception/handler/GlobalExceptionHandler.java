@@ -1,10 +1,11 @@
 package com.global.mazaad.common.exception.handler;
 
-import com.global.mazaad.Auction.exception.AuctionEndedException;
-import com.global.mazaad.Auction.exception.AuctionNotFoundException;
+import com.global.mazaad.auction.exception.AuctionEndedException;
+import com.global.mazaad.auction.exception.AuctionNotFoundException;
 import com.global.mazaad.bid.exception.InvalidBidAmountException;
 import com.global.mazaad.common.exception.dto.ApiErrorResponse;
-import jakarta.validation.ConstraintViolation;
+import com.global.mazaad.security.exception.JwtTokenBlacklistedException;
+import com.global.mazaad.security.exception.JwtTokenException;
 import jakarta.validation.ConstraintViolationException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,7 +18,6 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.util.HashSet;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Slf4j
 @RestControllerAdvice
@@ -41,8 +41,7 @@ public class GlobalExceptionHandler {
             .toList()
             .toString();
 
-    ApiErrorResponse apiErrorResponse =
-        apiErrorResponseCreator.buildResponse(message, HttpStatus.BAD_REQUEST);
+    ApiErrorResponse apiErrorResponse = apiErrorResponseCreator.buildResponse(message);
     log.error(
         "Handle method argument not valid exception: failed: message: {}, debugMessage: {}.",
         message,
@@ -75,8 +74,7 @@ public class GlobalExceptionHandler {
             "Missing attribute(s): "
                 + String.join(", ", missingAttributes)
                 + ". Constraint violation(s): "
-                + String.join(", ", constraintViolations),
-            HttpStatus.BAD_REQUEST);
+                + String.join(", ", constraintViolations));
 
     log.error(
         "Handling constraint violation exception: failed: missing attributes: {}, constraint violations: {}, debugMessage: {}.",
@@ -92,7 +90,7 @@ public class GlobalExceptionHandler {
   public ApiErrorResponse handleAuctionEndedException(final AuctionEndedException exception) {
 
     ApiErrorResponse apiErrorResponse =
-        apiErrorResponseCreator.buildResponse(exception.getMessage(), HttpStatus.FORBIDDEN);
+        apiErrorResponseCreator.buildResponse(exception.getMessage());
     log.error(exception.getMessage(), errorDebugMessageCreator.buildErrorDebugMessage(exception));
 
     return apiErrorResponse;
@@ -103,7 +101,7 @@ public class GlobalExceptionHandler {
   public ApiErrorResponse handleAuctionNotFoundException(final AuctionNotFoundException exception) {
 
     ApiErrorResponse apiErrorResponse =
-        apiErrorResponseCreator.buildResponse(exception.getMessage(), HttpStatus.NOT_FOUND);
+        apiErrorResponseCreator.buildResponse(exception.getMessage());
     log.error(exception.getMessage(), errorDebugMessageCreator.buildErrorDebugMessage(exception));
 
     return apiErrorResponse;
@@ -115,9 +113,30 @@ public class GlobalExceptionHandler {
       final InvalidBidAmountException exception) {
 
     ApiErrorResponse apiErrorResponse =
-        apiErrorResponseCreator.buildResponse(exception.getMessage(), HttpStatus.BAD_REQUEST);
+        apiErrorResponseCreator.buildResponse(exception.getMessage());
     log.error(exception.getMessage(), errorDebugMessageCreator.buildErrorDebugMessage(exception));
 
+    return apiErrorResponse;
+  }
+
+  @ExceptionHandler(JwtTokenException.class)
+  @ResponseStatus(HttpStatus.BAD_REQUEST) // Set appropriate HTTP status code
+  public ApiErrorResponse handleJwtTokenException(final JwtTokenException exception) {
+    // Customize error message and response as needed
+    String errorMessage = exception.getMessage();
+    ApiErrorResponse apiErrorResponse = apiErrorResponseCreator.buildResponse(errorMessage);
+    log.error(errorMessage, errorDebugMessageCreator.buildErrorDebugMessage(exception));
+    return apiErrorResponse;
+  }
+
+  @ExceptionHandler(JwtTokenBlacklistedException.class)
+  @ResponseStatus(HttpStatus.BAD_REQUEST) // Set appropriate HTTP status code
+  public ApiErrorResponse handleJwtTokenBlacklistedException(
+      final JwtTokenBlacklistedException exception) {
+    // Customize error message and response as needed
+    String errorMessage = exception.getMessage();
+    ApiErrorResponse apiErrorResponse = apiErrorResponseCreator.buildResponse(errorMessage);
+    log.error(errorMessage, errorDebugMessageCreator.buildErrorDebugMessage(exception));
     return apiErrorResponse;
   }
 }

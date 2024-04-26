@@ -16,9 +16,6 @@ public class ApiErrorResponse {
   @JsonProperty("message")
   String message;
 
-  @JsonProperty("httpStatusCode")
-  Integer httpStatusCode;
-
   @JsonProperty("timestamp")
   @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = TIMESTAMP_JSON_FORMAT)
   LocalDateTime timestamp;

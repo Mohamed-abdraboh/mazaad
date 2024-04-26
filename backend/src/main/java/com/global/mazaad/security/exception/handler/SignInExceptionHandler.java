@@ -26,8 +26,7 @@ public class SignInExceptionHandler {
   @ExceptionHandler({UserNotFoundException.class})
   @ResponseStatus(HttpStatus.UNAUTHORIZED)
   public ApiErrorResponse handleUserNotFoundException(final UserNotFoundException exception) {
-    ApiErrorResponse apiErrorResponse =
-        apiErrorResponseCreator.buildResponse(exception, HttpStatus.UNAUTHORIZED);
+    ApiErrorResponse apiErrorResponse = apiErrorResponseCreator.buildResponse(exception);
     log.warn(
         "Handle user not found exception: failed: message: {}, debugMessage: {}",
         apiErrorResponse.getMessage(),
@@ -39,8 +38,7 @@ public class SignInExceptionHandler {
   @ResponseStatus(HttpStatus.UNAUTHORIZED)
   public ApiErrorResponse handleUsernameNotFoundException(
       final UsernameNotFoundException exception) {
-    ApiErrorResponse apiErrorResponse =
-        apiErrorResponseCreator.buildResponse(exception, HttpStatus.UNAUTHORIZED);
+    ApiErrorResponse apiErrorResponse = apiErrorResponseCreator.buildResponse(exception);
     log.warn(
         "Handle user not found exception: failed: message: {}, debugMessage: {}",
         apiErrorResponse.getMessage(),
@@ -52,8 +50,7 @@ public class SignInExceptionHandler {
   @ResponseStatus(HttpStatus.UNAUTHORIZED)
   public ApiErrorResponse handleUserAccountLockedException(
       final UserAccountLockedException exception) {
-    ApiErrorResponse apiErrorResponse =
-        apiErrorResponseCreator.buildResponse(exception, HttpStatus.UNAUTHORIZED);
+    ApiErrorResponse apiErrorResponse = apiErrorResponseCreator.buildResponse(exception);
     log.warn(
         "Handle user account locked exception: failed: message: {}, debugMessage: {}",
         apiErrorResponse.getMessage(),
@@ -64,8 +61,7 @@ public class SignInExceptionHandler {
   @ExceptionHandler(BadCredentialsException.class)
   @ResponseStatus(HttpStatus.UNAUTHORIZED)
   public ApiErrorResponse handleBadCredentialsException(final BadCredentialsException exception) {
-    ApiErrorResponse apiErrorResponse =
-        apiErrorResponseCreator.buildResponse(exception, HttpStatus.UNAUTHORIZED);
+    ApiErrorResponse apiErrorResponse = apiErrorResponseCreator.buildResponse(exception);
     log.warn(
         "Handle bad credentials exception: failed: message: {}, debugMessage: {}",
         apiErrorResponse.getMessage(),

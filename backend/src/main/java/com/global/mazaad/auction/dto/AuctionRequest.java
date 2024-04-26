@@ -1,7 +1,6 @@
-package com.global.mazaad.Auction.dto;
+package com.global.mazaad.auction.dto;
 
 import com.global.mazaad.itemsOffer.dto.ItemsOfferDto;
-import jakarta.persistence.OneToOne;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;

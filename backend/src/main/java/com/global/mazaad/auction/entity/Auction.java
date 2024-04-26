@@ -1,4 +1,4 @@
-package com.global.mazaad.Auction.entity;
+package com.global.mazaad.auction.entity;
 
 import com.global.mazaad.bid.entity.Bid;
 import com.global.mazaad.common.auditing.AuditedEntity;

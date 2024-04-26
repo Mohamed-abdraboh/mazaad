@@ -3,9 +3,11 @@ package com.global.mazaad.security.jwt;
 import com.global.mazaad.security.config.SecurityConstants;
 import com.global.mazaad.security.exception.AbsentBearerHeaderException;
 import com.global.mazaad.security.exception.JwtTokenBlacklistedException;
+import com.global.mazaad.security.exception.JwtTokenException;
 import com.global.mazaad.security.exception.JwtTokenHasNoUserEmailException;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -43,7 +45,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
       log.info(authenticationToken.getName() + " " + authenticationToken.getAuthorities());
       filterChain.doFilter(httpRequest, httpResponse);
 
-    } catch (JwtTokenBlacklistedException exception) {
+    }
+     catch (JwtTokenBlacklistedException exception) {
       handleException(
           httpResponse, "JWT Token is blacklisted", exception, HttpServletResponse.SC_BAD_REQUEST);
     } catch (AbsentBearerHeaderException exception) {
@@ -54,7 +57,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
           HttpServletResponse.SC_BAD_REQUEST);
     } catch (ExpiredJwtException exception) {
       handleException(
-          httpResponse, "Jwt token is expired", exception, HttpServletResponse.SC_UNAUTHORIZED);
+          httpResponse,
+          "Jwt accessToken is expired",
+          exception,
+          HttpServletResponse.SC_UNAUTHORIZED);
     } catch (JwtTokenHasNoUserEmailException exception) {
       handleException(
           httpResponse,
@@ -67,12 +73,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
           "User with the provided email does not exist",
           exception,
           HttpServletResponse.SC_NOT_FOUND);
-    } catch (Exception exception) {
-      handleException(
-          httpResponse,
-          "Internal server error",
-          exception,
-          HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+    } catch (ServletException e) {
+
     }
   }
 

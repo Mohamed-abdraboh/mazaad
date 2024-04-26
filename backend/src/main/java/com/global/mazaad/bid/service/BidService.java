@@ -1,13 +1,12 @@
 package com.global.mazaad.bid.service;
 
-import com.global.mazaad.Auction.entity.Auction;
-import com.global.mazaad.Auction.service.AuctionService;
+import com.global.mazaad.auction.entity.Auction;
+import com.global.mazaad.auction.service.AuctionService;
 import com.global.mazaad.bid.dto.BidRequest;
 import com.global.mazaad.bid.entity.Bid;
 import com.global.mazaad.bid.mapper.BidRequestMapper;
 import com.global.mazaad.bid.repository.BidRepository;
 import com.global.mazaad.user.entity.User;
-import com.global.mazaad.user.repository.UserRepository;
 import com.global.mazaad.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;

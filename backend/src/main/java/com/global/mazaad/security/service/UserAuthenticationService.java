@@ -39,7 +39,7 @@ public class UserAuthenticationService {
 
       String jwtRefreshToken = jwtTokenProvider.generateRefreshToken(userDetails);
       String jwtToken = jwtTokenProvider.generateToken(userDetails);
-      log.info("Generated JWT token for user with email = '{}'", request.phoneNumber());
+      log.info("Generated JWT accessToken for user with email = '{}'", request.phoneNumber());
 
       return new UserAuthenticationResponse(jwtToken, jwtRefreshToken);
 
@@ -64,7 +64,7 @@ public class UserAuthenticationService {
     try {
       String jwtRefreshToken = jwtTokenProvider.generateRefreshToken(userDetails);
       String jwtToken = jwtTokenProvider.generateToken(userDetails);
-      log.info("Generated JWT token for user with email = '{}'", userPhoneNumber);
+      log.info("Generated JWT accessToken for user with email = '{}'", userPhoneNumber);
 
       return new UserAuthenticationResponse(jwtToken, jwtRefreshToken);
     } catch (BadCredentialsException exception) {
