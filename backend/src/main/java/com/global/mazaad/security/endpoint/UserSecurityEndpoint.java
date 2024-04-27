@@ -91,4 +91,16 @@ public class UserSecurityEndpoint {
 
     return ResponseEntity.ok().build();
   }
+  @PostMapping("/change")
+  public ResponseEntity<Void> changePassword() {
+    log.info("Received logout request");
+
+    String token = jwtTokenFromAuthHeaderExtractor.extract(httpRequest);
+
+    jwtBlacklist.addToBlacklist(token);
+
+    return ResponseEntity
+            .ok()
+            .build();
+  }
 }

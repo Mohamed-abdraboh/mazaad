@@ -10,8 +10,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Service;
 
-import java.util.Objects;
-
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -29,7 +27,7 @@ public class JwtAuthenticationProvider {
     String jwtType = jwtClaimExtractor.extractType(jwtToken);
     if (jwtType.equals("REFRESH") && !httpRequest.getServletPath().equals("/api/v1/auth/refresh"))
       throw new JwtTokenException("can't access resources with refresh token");
-    final String phoneNumber = jwtClaimExtractor.extractPhoneNumer(jwtToken);
+    final String phoneNumber = jwtClaimExtractor.extractPhoneNumber(jwtToken);
 
     UserDetails userDetails = this.userDetailsService.loadUserByUsername(phoneNumber);
 

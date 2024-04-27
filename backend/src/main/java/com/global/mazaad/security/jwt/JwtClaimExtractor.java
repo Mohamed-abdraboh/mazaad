@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
 public class JwtClaimExtractor {
   private final JwtSignKeyProvider jwtSignKeyProvider;
 
-  public String extractPhoneNumer(final String jwtToken) {
+  public String extractPhoneNumber(final String jwtToken) {
 
     return extractAllClaims(jwtToken).getSubject();
   }
