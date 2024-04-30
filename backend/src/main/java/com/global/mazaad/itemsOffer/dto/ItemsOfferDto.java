@@ -14,9 +14,15 @@ import org.checkerframework.checker.units.qual.N;
 @Getter
 @Builder
 public class ItemsOfferDto {
-  @NotNull(message = "ItemsOffer Unit must not be null") private Unit unit;
-  @NotNull(message = "ItemsOffer quantity must not be null") private Double quantity;
+  @NotNull(message = "ItemsOffer Unit must not be null")
+  private Unit unit;
 
-  @NotNull(message = "ItemsOffer Unit must not be null") private ItemType type;
-  @NotNull(message = "ItemsOffer location must not be null") private String location;
+  @NotNull(message = "ItemsOffer quantity must not be null")
+  private Double quantity;
+
+  @NotNull(message = "ItemsOffer Unit must not be null")
+  private ItemType type;
+
+  @NotNull(message = "ItemsOffer location must not be null")
+  private String location;
 }

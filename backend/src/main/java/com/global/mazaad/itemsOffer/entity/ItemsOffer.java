@@ -34,6 +34,6 @@ public class ItemsOffer extends AuditedEntity {
 
   @ElementCollection
   @CollectionTable(name = "offer_image", joinColumns = @JoinColumn(name = "offer_id"))
-  @Column(name = "image_path")
-  private List<String> imagePaths;
+  @Column(name = "image_url")
+  private List<String> imagesUrls;
 }

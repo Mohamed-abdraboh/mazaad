@@ -6,7 +6,6 @@ import com.global.mazaad.auction.entity.Auction;
 import com.global.mazaad.auction.exception.AuctionNotFoundException;
 import com.global.mazaad.auction.mapper.AuctionMapper;
 import com.global.mazaad.auction.repository.AuctionRepository;
-import com.global.mazaad.storage.service.FileSystemStorageService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -20,7 +19,6 @@ import java.util.stream.Collectors;
 public class AuctionService {
   private final AuctionRepository auctionRepository;
   private final AuctionMapper auctionMapper;
-  private final FileSystemStorageService fileSystemStorageService;
 
   @Transactional
   public Long createAuction(AuctionRequest auctionRequest) {

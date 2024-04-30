@@ -5,13 +5,14 @@ import com.global.mazaad.auction.dto.AuctionResponse;
 import com.global.mazaad.auction.entity.Auction;
 import com.global.mazaad.auction.service.AuctionService;
 import com.global.mazaad.itemsOffer.service.ItemsOfferService;
-import com.global.mazaad.storage.service.FileSystemStorageService;
 import io.swagger.v3.oas.annotations.Operation;
 import java.net.URI;
 import java.util.List;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.apache.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -23,7 +24,6 @@ import org.springframework.web.multipart.MultipartFile;
 public class AuctionController {
   private final AuctionService auctionService;
   private final ItemsOfferService itemsOfferService;
-  private final FileSystemStorageService fileSystemStorageService;
 
   @Operation(summary = "Create new auction.")
   @PreAuthorize("hasRole('ADMIN')")
@@ -34,6 +34,7 @@ public class AuctionController {
         .body("Auction created with id " + auctionId);
   }
 
+  @Operation(summary = "Retrieve auctions.")
   @GetMapping
   public ResponseEntity<?> getAuctions(@RequestParam(defaultValue = "10") int pageSize) {
     List<AuctionResponse> auctionResponses = auctionService.getAuctions(pageSize);
@@ -59,14 +60,20 @@ public class AuctionController {
 
   @Operation(summary = "Upload image.")
   @PreAuthorize("hasRole('ADMIN')")
-  @PostMapping("/{id}")
+  @PostMapping("/{id}/images")
   public ResponseEntity<?> uploadImage(
-      @PathVariable Long id, @RequestParam("file") MultipartFile multipartFile) {
-    String imagePath = fileSystemStorageService.store(multipartFile);
+      @PathVariable Long id, @RequestParam("file") MultipartFile[] multipartFile) {
     Auction auction = auctionService.findById(id);
-    Long itemsOfferId =
-        itemsOfferService.addImageToItemsOffer(auction.getItemsOffer().getId(), imagePath);
-    return ResponseEntity.created(URI.create("/resources/" + itemsOfferId))
-        .body("Image uploaded successfully");
+    Long itemsOfferId = auction.getItemsOffer().getId();
+    List<String> imagesUrls = itemsOfferService.addImage(itemsOfferId, multipartFile);
+    return ResponseEntity.status(HttpStatus.SC_CREATED).body(imagesUrls);
+  }
+
+  @Operation(summary = "Get all images urls.")
+  @GetMapping("/{id}/images")
+  public ResponseEntity<?> downloadImages(@PathVariable Long id) {
+    Auction auction = auctionService.findById(id);
+    Long itemsOfferId = auction.getItemsOffer().getId();
+    return ResponseEntity.ok(itemsOfferService.getAllImagesUrls(itemsOfferId));
   }
 }

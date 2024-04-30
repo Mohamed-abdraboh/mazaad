@@ -76,7 +76,8 @@ public class UserSecurityEndpoint {
         jwtTokenFromAuthHeaderExtractor.extract(httpRequest.getHeader(HttpHeaders.AUTHORIZATION));
     if (!jwtValidator.isRefresh(token))
       throw new JwtTokenException("Can't refresh with access accessToken");
-      jwtBlacklist.addToBlacklist(token);
+
+    jwtBlacklist.addToBlacklist(token);
     log.info("Refresh completed for user");
     return ResponseEntity.ok(authenticationResponse);
   }
@@ -91,6 +92,7 @@ public class UserSecurityEndpoint {
 
     return ResponseEntity.ok().build();
   }
+
   @PostMapping("/change")
   public ResponseEntity<Void> changePassword() {
     log.info("Received logout request");
@@ -99,8 +101,6 @@ public class UserSecurityEndpoint {
 
     jwtBlacklist.addToBlacklist(token);
 
-    return ResponseEntity
-            .ok()
-            .build();
+    return ResponseEntity.ok().build();
   }
 }
