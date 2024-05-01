@@ -27,7 +27,7 @@ public class WhatsappOtpSender {
 
     // Send POST request
     HttpEntity<MultiValueMap<String, String>> requestEntity =
-        httpEntityBuilder.build("201551255561", messageCode);
+        httpEntityBuilder.build(destinationPhoneNumber, messageCode);
     ResponseEntity<String> responseEntity =
         restTemplate.exchange(API_URL, HttpMethod.POST, requestEntity, String.class);
 
