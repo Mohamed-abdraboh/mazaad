@@ -4,6 +4,7 @@ import com.global.mazaad.common.exception.dto.ApiErrorResponse;
 import com.global.mazaad.common.exception.handler.ApiErrorResponseCreator;
 import com.global.mazaad.common.exception.handler.ErrorDebugMessageCreator;
 import com.global.mazaad.user.exception.InvalidOldPasswordException;
+import com.global.mazaad.user.exception.PhoneNumberAlreadyExistException;
 import com.global.mazaad.user.exception.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -51,6 +52,18 @@ public class UserExceptionHandler {
     ApiErrorResponse apiErrorResponse = apiErrorResponseCreator.buildResponse(exception);
     log.warn(
         "Handle user's invalid old password exception: failed: message: {}, debugMessage: {}",
+        apiErrorResponse.getMessage(),
+        errorDebugMessageCreator.buildErrorDebugMessage(exception));
+    return apiErrorResponse;
+  }
+
+  @ExceptionHandler({PhoneNumberAlreadyExistException.class})
+  @ResponseStatus(HttpStatus.CONFLICT)
+  public ApiErrorResponse handlePhoneNumberAlreadyExistException(
+      final PhoneNumberAlreadyExistException exception) {
+    ApiErrorResponse apiErrorResponse = apiErrorResponseCreator.buildResponse(exception);
+    log.warn(
+        "Handle phone number already exist exception: failed: message: {}, debugMessage: {}",
         apiErrorResponse.getMessage(),
         errorDebugMessageCreator.buildErrorDebugMessage(exception));
     return apiErrorResponse;

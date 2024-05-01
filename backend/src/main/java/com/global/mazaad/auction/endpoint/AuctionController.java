@@ -26,7 +26,6 @@ public class AuctionController {
   private final ItemsOfferService itemsOfferService;
 
   @Operation(summary = "Create new auction.")
-  @PreAuthorize("hasRole('ADMIN')")
   @PostMapping
   public ResponseEntity<?> createAuction(@Valid @RequestBody AuctionRequest auctionRequest) {
     Long auctionId = auctionService.createAuction(auctionRequest);
@@ -42,7 +41,6 @@ public class AuctionController {
   }
 
   @Operation(summary = "Delete an auction.")
-  @PreAuthorize("hasRole('ADMIN')")
   @DeleteMapping("/{id}")
   public ResponseEntity<?> deleteAuction(@PathVariable Long id) {
     auctionService.deleteAuction(id);
@@ -50,7 +48,6 @@ public class AuctionController {
   }
 
   @Operation(summary = "Modify existing auction.")
-  @PreAuthorize("hasRole('ADMIN')")
   @PutMapping("/{id}")
   public ResponseEntity<?> ModifyAuction(
       @PathVariable Long id, @RequestBody AuctionRequest auctionRequest) {
@@ -59,7 +56,6 @@ public class AuctionController {
   }
 
   @Operation(summary = "Upload image.")
-  @PreAuthorize("hasRole('ADMIN')")
   @PostMapping("/{id}/images")
   public ResponseEntity<?> uploadImage(
       @PathVariable Long id, @RequestParam("file") MultipartFile[] multipartFile) {

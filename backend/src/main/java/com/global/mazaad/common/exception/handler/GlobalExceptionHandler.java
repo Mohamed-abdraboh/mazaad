@@ -3,6 +3,7 @@ package com.global.mazaad.common.exception.handler;
 import com.global.mazaad.auction.exception.AuctionEndedException;
 import com.global.mazaad.auction.exception.AuctionNotFoundException;
 import com.global.mazaad.bid.exception.InvalidBidAmountException;
+import com.global.mazaad.common.exception.NotActivatedAccountException;
 import com.global.mazaad.common.exception.dto.ApiErrorResponse;
 import com.global.mazaad.security.exception.JwtTokenBlacklistedException;
 import com.global.mazaad.security.exception.JwtTokenException;
@@ -133,6 +134,17 @@ public class GlobalExceptionHandler {
   @ResponseStatus(HttpStatus.BAD_REQUEST) // Set appropriate HTTP status code
   public ApiErrorResponse handleJwtTokenBlacklistedException(
       final JwtTokenBlacklistedException exception) {
+    // Customize error message and response as needed
+    String errorMessage = exception.getMessage();
+    ApiErrorResponse apiErrorResponse = apiErrorResponseCreator.buildResponse(errorMessage);
+    log.error(errorMessage, errorDebugMessageCreator.buildErrorDebugMessage(exception));
+    return apiErrorResponse;
+  }
+
+  @ExceptionHandler(NotActivatedAccountException.class)
+  @ResponseStatus(HttpStatus.FORBIDDEN) // Set appropriate HTTP status code
+  public ApiErrorResponse handleNotActivatedAccountException(
+      final NotActivatedAccountException exception) {
     // Customize error message and response as needed
     String errorMessage = exception.getMessage();
     ApiErrorResponse apiErrorResponse = apiErrorResponseCreator.buildResponse(errorMessage);

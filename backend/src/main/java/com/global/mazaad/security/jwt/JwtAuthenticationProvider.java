@@ -1,5 +1,6 @@
 package com.global.mazaad.security.jwt;
 
+import com.global.mazaad.common.exception.NotActivatedAccountException;
 import com.global.mazaad.security.exception.JwtTokenException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -31,6 +32,7 @@ public class JwtAuthenticationProvider {
 
     UserDetails userDetails = this.userDetailsService.loadUserByUsername(phoneNumber);
 
+    if (!userDetails.isEnabled()) throw new NotActivatedAccountException(userDetails.getUsername());
     UsernamePasswordAuthenticationToken authenticationToken =
         new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
     authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(httpRequest));

@@ -1,7 +1,7 @@
 package com.global.mazaad.whatsapp.exception;
 
 public class TokenNotSentException extends RuntimeException {
-  public TokenNotSentException() {
-    super("Token not sent.");
+  public TokenNotSentException(String message) {
+    super(message);
   }
 }

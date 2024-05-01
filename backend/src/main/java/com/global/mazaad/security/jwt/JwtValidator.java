@@ -13,7 +13,6 @@ public class JwtValidator {
 
   public void validate(String jwtToken) {
     validateIfBlacklisted(jwtToken);
-    //    validateIfExpired(jwtToken);
   }
 
   public void validateIfBlacklisted(String jwtToken) {
@@ -25,10 +24,4 @@ public class JwtValidator {
   public boolean isRefresh(String jwtToken) {
     return jwtClaimExtractor.extractType(jwtToken).equals(TokenType.REFRESH.toString());
   }
-
-  //  public void validateIfExpired(String jwtToken) {
-  //    Date tokenExpiryDate = jwtClaimExtractor.extractExpirationDate(jwtToken);
-  //    boolean isExpired = tokenExpiryDate.before(new Date(System.currentTimeMillis()));
-  //    if (isExpired) throw new ExpiredJwtException();
-  //  }
 }

@@ -45,8 +45,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
       log.info(authenticationToken.getName() + " " + authenticationToken.getAuthorities());
       filterChain.doFilter(httpRequest, httpResponse);
 
-    }
-     catch (JwtTokenBlacklistedException exception) {
+    } catch (JwtTokenBlacklistedException exception) {
       handleException(
           httpResponse, "JWT Token is blacklisted", exception, HttpServletResponse.SC_BAD_REQUEST);
     } catch (AbsentBearerHeaderException exception) {
@@ -74,7 +73,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
           exception,
           HttpServletResponse.SC_NOT_FOUND);
     } catch (ServletException e) {
-
+      handleException(
+          httpResponse, "Internal Sever Error", e, HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
     }
   }
 
@@ -92,7 +92,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
   }
 
   private boolean isSecuredUrl(HttpServletRequest request) {
-
+    if (request.getMethod().equals("GET")
+        && new AntPathRequestMatcher(SecurityConstants.AUCTIONS_URL).matches(request)) {
+      return false;
+    }
     return Stream.of(
             SecurityConstants.USERS_URL,
             SecurityConstants.ADMINS_URL,

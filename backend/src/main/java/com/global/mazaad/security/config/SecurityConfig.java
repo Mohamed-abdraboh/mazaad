@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -41,9 +42,11 @@ public class SecurityConfig {
                     .authenticated()
                     .requestMatchers(SecurityConstants.ADMINS_URL)
                     .authenticated()
-                    .requestMatchers(SecurityConstants.AUCTIONS_URL)
-                    .hasRole("ADMIN")
                     .requestMatchers(SecurityConstants.BIDS_URL)
+                    .hasRole("USER")
+                    .requestMatchers(HttpMethod.GET, SecurityConstants.AUCTIONS_URL)
+                    .permitAll()
+                    .requestMatchers(SecurityConstants.AUCTIONS_URL)
                     .hasRole("ADMIN")
                     .anyRequest()
                     .permitAll())
