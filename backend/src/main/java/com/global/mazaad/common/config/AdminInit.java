@@ -23,7 +23,7 @@ public class AdminInit implements CommandLineRunner {
             .isAccountNonLocked(true)
             .isEnabled(true)
             .password(passwordEncoder.encode("12345678"))
-            .phoneNumber("01015422609")
+            .phoneNumber("01551255561")
             .build();
     userRepository.save(user);
   }

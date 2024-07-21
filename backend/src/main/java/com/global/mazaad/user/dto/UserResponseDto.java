@@ -1,6 +1,5 @@
 package com.global.mazaad.user.dto;
 
-import jakarta.persistence.Column;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,12 +9,11 @@ import lombok.Setter;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserDto {
-
+public class UserResponseDto {
+  private Long id;
   private String name;
   private String phoneNumber;
   private String email;
-  private String password;
   private String companyName;
   private String location;
 }
