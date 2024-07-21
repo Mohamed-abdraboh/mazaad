@@ -1,5 +1,6 @@
 package com.global.mazaad.user.dto;
 
+import com.global.mazaad.user.entity.Role;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,5 +16,6 @@ public class UserResponseDto {
   private String phoneNumber;
   private String email;
   private String companyName;
+  private Role role;
   private String location;
 }
