@@ -10,6 +10,4 @@ import org.springframework.stereotype.Component;
 @Mapper
 public interface UserResponseMapper {
   UserResponseDto mapToDto(User user);
-
-  User mapToUser(UserResponseDto userResponseDto);
 }
