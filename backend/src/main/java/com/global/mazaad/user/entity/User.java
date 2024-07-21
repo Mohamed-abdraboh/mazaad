@@ -33,7 +33,7 @@ public class User extends AuditedEntity implements UserDetails {
   @Column(name = "email", unique = true)
   private String email;
 
-  @Column(name = "password", nullable = false, unique = true)
+  @Column(name = "password", nullable = false)
   private String password;
 
   private String companyName;
