@@ -16,15 +16,20 @@ public class AdminInit implements CommandLineRunner {
 
   @Override
   public void run(String... args) throws Exception {
-    User user =
-        User.builder()
-            .name("mohamed")
-            .role(Role.ROLE_ADMIN)
-            .isAccountNonLocked(true)
-            .isEnabled(true)
-            .password(passwordEncoder.encode("12345678"))
-            .phoneNumber("01551255561")
-            .build();
-    userRepository.save(user);
+    String adminPhoneNumber = "01551255561"; // The phone number to identify the admin user
+
+    // Check if a user with the admin's phone number already exists
+    if (userRepository.findByPhoneNumber(adminPhoneNumber).isEmpty()) {
+      User user =
+              User.builder()
+                      .name("mohamed")
+                      .role(Role.ROLE_ADMIN)
+                      .isAccountNonLocked(true)
+                      .isEnabled(true)
+                      .password(passwordEncoder.encode("12345678"))
+                      .phoneNumber(adminPhoneNumber)
+                      .build();
+      userRepository.save(user);
+    }
   }
 }
