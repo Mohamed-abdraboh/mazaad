@@ -11,6 +11,7 @@ import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -33,10 +34,17 @@ public class JwtTokenProvider {
   private String generateToken(
       final Map<String, Object> extraClaims, final UserDetails userDetails) {
     try {
+      String role =
+          userDetails.getAuthorities().stream()
+              .findFirst()
+              .map(GrantedAuthority::getAuthority)
+              .orElse("ROLE_USER"); // Default role if none found
+
       return Jwts.builder()
           .claims(extraClaims)
           .id(UUID.randomUUID().toString())
           .claim("type", "ACCESS")
+          .claim("role", role)
           .subject(userDetails.getUsername())
           .issuedAt(new Date(System.currentTimeMillis()))
           .expiration(new Date(System.currentTimeMillis() + validityInMilliseconds))
