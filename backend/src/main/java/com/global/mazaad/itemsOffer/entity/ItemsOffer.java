@@ -2,7 +2,6 @@ package com.global.mazaad.itemsOffer.entity;
 
 import com.global.mazaad.auction.entity.Auction;
 import com.global.mazaad.common.auditing.AuditedEntity;
-import com.global.mazaad.itemsOffer.constant.ItemType;
 import com.global.mazaad.itemsOffer.constant.Unit;
 import jakarta.persistence.*;
 import lombok.*;
@@ -24,8 +23,7 @@ public class ItemsOffer extends AuditedEntity {
 
   private Double quantity;
 
-  @Enumerated(EnumType.STRING)
-  private ItemType type;
+  private String type;
 
   private String location;
 

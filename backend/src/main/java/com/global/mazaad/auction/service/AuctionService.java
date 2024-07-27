@@ -8,7 +8,10 @@ import com.global.mazaad.auction.mapper.AuctionMapper;
 import com.global.mazaad.auction.repository.AuctionRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -27,10 +30,27 @@ public class AuctionService {
     return auction.getId();
   }
 
-  public List<AuctionResponse> getAuctions(int pageSize) {
-    List<Auction> auctions = auctionRepository.findAll(Pageable.ofSize(pageSize)).toList();
+  public Page<AuctionResponse> getAuctions(
+      int pageSize, int pageNumber, String sortDirection, String type) {
 
-    return auctions.stream().map(auctionMapper::mapToResponse).collect(Collectors.toList());
+    // Setting a default sort property
+    String sortBy = "startDateTime";
+
+    Pageable pageable =
+        PageRequest.of(
+            pageNumber, pageSize, Sort.by(Sort.Direction.fromString(sortDirection), sortBy));
+
+    Page<Auction> auctionPage;
+    if (type != null && !type.isEmpty()) {
+      String itemType = type.toUpperCase();
+      auctionPage = auctionRepository.findByItemsOffer_Type(itemType, pageable);
+    } else {
+      auctionPage = auctionRepository.findAll(pageable);
+    }
+
+    // Map the content of the page to AuctionResponse
+
+    return auctionPage.map(auctionMapper::mapToResponse);
   }
 
   @Transactional
