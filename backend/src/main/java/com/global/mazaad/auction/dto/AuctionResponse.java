@@ -1,10 +1,12 @@
 package com.global.mazaad.auction.dto;
 
+import com.global.mazaad.bid.dto.BidResponse;
 import com.global.mazaad.itemsOffer.dto.ItemsOfferDto;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.PriorityQueue;
 
 @Setter
@@ -17,5 +19,5 @@ public class AuctionResponse {
   private Double startPrice;
   private ItemsOfferDto itemsOffer;
   private String description;
-  private PriorityQueue<Double> bids;
+  private List<BidResponse> bids;
 }
