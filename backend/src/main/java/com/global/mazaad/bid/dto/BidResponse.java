@@ -9,4 +9,5 @@ import lombok.Setter;
 public class BidResponse {
   private Double amount;
   private Long userId;
+  private String userName;
 }

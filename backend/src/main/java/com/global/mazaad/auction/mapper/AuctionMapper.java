@@ -12,6 +12,8 @@ import org.mapstruct.Mapping;
 @Mapper(uses = {ItemsOfferMapper.class, BidResponseMapper.class})
 public interface AuctionMapper {
 
+  @Mapping(target = "id", ignore = true)
+  @Mapping(target = "bids", ignore = true)
   Auction mapToAuction(AuctionRequest auctionRequest);
 
   AuctionRequest mapToRequest(Auction auction);

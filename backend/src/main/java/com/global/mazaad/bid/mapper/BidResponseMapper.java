@@ -11,6 +11,7 @@ import java.util.List;
 @Mapper
 public interface BidResponseMapper {
 
+  @Mapping(target = "userName", source = "user.name")
   @Mapping(target = "userId", source = "user.id")
   BidResponse mapToResponse(Bid bid);
 
