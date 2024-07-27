@@ -12,6 +12,7 @@ import java.util.List;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.apache.http.HttpStatus;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -35,8 +36,14 @@ public class AuctionController {
 
   @Operation(summary = "Retrieve auctions.")
   @GetMapping
-  public ResponseEntity<?> getAuctions(@RequestParam(defaultValue = "10") int pageSize) {
-    List<AuctionResponse> auctionResponses = auctionService.getAuctions(pageSize);
+  public ResponseEntity<?> getAuctions(
+      @RequestParam(defaultValue = "10") int pageSize,
+      @RequestParam(defaultValue = "0") int pageNumber,
+      @RequestParam(defaultValue = "asc") String sortDirection,
+      @RequestParam(required = false) String type) {
+
+    Page<AuctionResponse> auctionResponses =
+        auctionService.getAuctions(pageSize, pageNumber, sortDirection, type);
     return ResponseEntity.ok(auctionResponses);
   }
 
