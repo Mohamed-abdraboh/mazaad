@@ -32,5 +32,6 @@ public class Auction extends AuditedEntity {
   private String description;
 
   @OneToMany(mappedBy = "auction", cascade = CascadeType.ALL)
+  @OrderBy("amount DESC")
   private List<Bid> bids = new ArrayList<>();
 }
