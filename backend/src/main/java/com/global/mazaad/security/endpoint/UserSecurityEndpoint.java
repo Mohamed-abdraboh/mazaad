@@ -108,16 +108,4 @@ public class UserSecurityEndpoint {
     userRegistrationService.activate(phoneNumber, code);
     return ResponseEntity.ok("User has been Activated Successfully");
   }
-
-  @PreAuthorize("hasAuthority('ROLE_USER')")
-  @PostMapping("/change")
-  public ResponseEntity<?> changePassword() {
-    log.info("Received logout request");
-
-    String token = jwtTokenFromAuthHeaderExtractor.extract(httpRequest);
-
-    jwtBlacklist.addToBlacklist(token);
-
-    return ResponseEntity.ok().build();
-  }
 }
