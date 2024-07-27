@@ -53,7 +53,6 @@ public class UserRegistrationService {
     String phoneNumber = userRegistrationRequest.getPhoneNumber();
     whatsappManager.sendOtp(phoneNumber);
   }
-
   public void activate(String phoneNumber, String token) {
     User user = userService.findByPhoneNumber(phoneNumber);
     tokenValidator.validate(token, user);
