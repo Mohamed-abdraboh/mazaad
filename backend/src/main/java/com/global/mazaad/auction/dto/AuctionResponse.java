@@ -11,6 +11,7 @@ import java.util.PriorityQueue;
 @Getter
 public class AuctionResponse {
 
+  private Long id;
   private LocalDateTime startDateTime;
   private LocalDateTime endDateTime;
   private Double startPrice;
