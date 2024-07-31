@@ -5,6 +5,7 @@ import com.global.mazaad.whatsapp.service.HttpEntityBuilder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
@@ -19,6 +20,7 @@ public class WhatsappOtpSender {
   private final HttpEntityBuilder httpEntityBuilder;
   private final String EGYPT_PHONE_NUMBER_PREFIX = "2";
 
+  @Async
   public void sendOtp(String destinationPhoneNumber, String messageCode) {
     destinationPhoneNumber = EGYPT_PHONE_NUMBER_PREFIX + destinationPhoneNumber;
 
