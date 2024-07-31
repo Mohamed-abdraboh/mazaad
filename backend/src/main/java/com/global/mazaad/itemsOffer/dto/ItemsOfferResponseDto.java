@@ -6,20 +6,16 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
+
 @Setter
 @Getter
 @Builder
-public class ItemsOfferDto {
-  @NotNull(message = "ItemsOffer Unit must not be null")
+public class ItemsOfferResponseDto {
+
   private Unit unit;
-
-  @NotNull(message = "ItemsOffer quantity must not be null")
   private Double quantity;
-
-  @NotNull(message = "ItemsOffer Unit must not be null")
   private String type;
-
-  @NotNull(message = "ItemsOffer location must not be null")
   private String location;
-
+  private List<String> imagesUrls;
 }

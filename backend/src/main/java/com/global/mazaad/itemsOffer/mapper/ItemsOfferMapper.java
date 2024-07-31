@@ -1,6 +1,7 @@
 package com.global.mazaad.itemsOffer.mapper;
 
 import com.global.mazaad.itemsOffer.dto.ItemsOfferDto;
+import com.global.mazaad.itemsOffer.dto.ItemsOfferResponseDto;
 import com.global.mazaad.itemsOffer.entity.ItemsOffer;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -17,6 +18,9 @@ public interface ItemsOfferMapper {
   ItemsOffer mapToItemsOffer(ItemsOfferDto itemsOfferDto);
 
   ItemsOfferDto mapToDto(ItemsOffer itemsOffer);
+
+  ItemsOfferResponseDto mapToResponseDto(ItemsOffer itemsOffer);
+
   @Named("toUpperCase")
   default String toUpperCase(String value) {
     return value != null ? value.toUpperCase() : null;
