@@ -23,6 +23,7 @@ public class StorageService {
 
   @Value("${cloud.aws.bucket.name}")
   private String bucketName;
+
   private final AmazonS3 s3Client;
   private final AwsUrlBuilder urlBuilder;
 
@@ -43,13 +44,14 @@ public class StorageService {
     try {
       return IOUtils.toByteArray(inputStream);
     } catch (IOException e) {
-      e.printStackTrace();
+      log.error("Error downloading file from S3", e);
+      return null;
     }
-    return null;
   }
 
   public String deleteFile(String fileName) {
     s3Client.deleteObject(bucketName, fileName);
+    log.info("{} removed ...", fileName);
     return fileName + " removed ...";
   }
 
