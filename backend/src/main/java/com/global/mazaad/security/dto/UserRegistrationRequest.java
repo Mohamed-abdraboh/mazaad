@@ -19,7 +19,7 @@ public class UserRegistrationRequest {
   @Size(min = 8)
   private String password;
 
-  @NotNull @Email private String email;
+  @Email private String email;
   private String companyName;
   private String location;
 }
