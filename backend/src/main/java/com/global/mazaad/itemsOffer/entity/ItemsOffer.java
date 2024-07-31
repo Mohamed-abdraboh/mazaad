@@ -2,6 +2,7 @@ package com.global.mazaad.itemsOffer.entity;
 
 import com.global.mazaad.auction.entity.Auction;
 import com.global.mazaad.common.auditing.AuditedEntity;
+import com.global.mazaad.itemsOffer.config.ItemsOfferEntityListener;
 import com.global.mazaad.itemsOffer.constant.Unit;
 import jakarta.persistence.*;
 import lombok.*;
@@ -13,6 +14,7 @@ import java.util.*;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
+@EntityListeners(ItemsOfferEntityListener.class)
 public class ItemsOffer extends AuditedEntity {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
