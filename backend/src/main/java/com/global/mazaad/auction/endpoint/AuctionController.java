@@ -64,13 +64,13 @@ public class AuctionController {
     return ResponseEntity.ok("Auction updated with id " + id);
   }
 
-  @Operation(summary = "Upload image.")
-  @PostMapping("/{id}/images")
-  public ResponseEntity<?> uploadImage(
-          @PathVariable Long id, @RequestParam("image") MultipartFile[] multipartFiles) {
-    Auction auction = auctionService.findById(id);
-    Long itemsOfferId = auction.getItemsOffer().getId();
-    List<String> imagesUrls = itemsOfferService.addImage(itemsOfferId, multipartFiles);
-    return ResponseEntity.status(HttpStatus.CREATED).body(imagesUrls);
-  }
+//  @Operation(summary = "Upload image.")
+//  @PostMapping("/{id}/images")
+//  public ResponseEntity<?> uploadImage(
+//          @PathVariable Long id, @RequestParam("image") MultipartFile[] multipartFiles) {
+//    Auction auction = auctionService.findById(id);
+//    Long itemsOfferId = auction.getItemsOffer().getId();
+//    List<String> imagesUrls = itemsOfferService.addImage(itemsOfferId, multipartFiles);
+//    return ResponseEntity.status(HttpStatus.CREATED).body(imagesUrls);
+//  }
 }

@@ -7,6 +7,7 @@ import com.global.mazaad.itemsOffer.repository.ItemsOfferRepository;
 import com.global.mazaad.storage.service.AwsUrlBuilder;
 import com.global.mazaad.storage.service.StorageService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -26,15 +27,14 @@ public class ItemsOfferService {
     return itemsOfferRepository.save(itemsOffer);
   }
 
-  public List<String> addImage(Long itemsOfferId, MultipartFile[] files) {
-    List<String> urls = new ArrayList<>();
+  @Async
+  public void addImage(Long itemsOfferId, MultipartFile[] files) {
+
     for (MultipartFile file : files) {
       String fileName = storageService.uploadFile(file);
       String imageUrl = awsUrlBuilder.build(fileName);
       itemsOfferRepository.addImageToItemsOffer(itemsOfferId, imageUrl);
-      urls.add(imageUrl);
     }
-    return urls;
   }
 
   public List<String> getAllImagesUrls(Long itemsOfferId) {
