@@ -11,9 +11,8 @@ import java.util.List;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.apache.http.HttpStatus;
 import org.springframework.data.domain.Page;
-import org.springframework.http.HttpStatusCode;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -28,22 +27,25 @@ public class AuctionController {
 
   @Operation(summary = "Create new auction.")
   @PostMapping
-  public ResponseEntity<?> createAuction(@Valid @RequestBody AuctionRequest auctionRequest) {
-    Long auctionId = auctionService.createAuction(auctionRequest);
+  public ResponseEntity<?> createAuction(
+          @Valid @RequestPart AuctionRequest auctionRequest,
+          @RequestPart(value = "image", required = false) MultipartFile[] multipartFile) {
+    Long auctionId = auctionService.createAuction(auctionRequest, multipartFile);
     return ResponseEntity.created(URI.create("/resources/" + auctionId))
-        .body("Auction created with id " + auctionId);
+            .body("Auction created with id " + auctionId);
   }
+
 
   @Operation(summary = "Retrieve auctions.")
   @GetMapping
   public ResponseEntity<?> getAuctions(
-      @RequestParam(defaultValue = "10") int pageSize,
-      @RequestParam(defaultValue = "0") int pageNumber,
-      @RequestParam(defaultValue = "asc") String sortDirection,
-      @RequestParam(required = false) String type) {
+          @RequestParam(defaultValue = "10") int pageSize,
+          @RequestParam(defaultValue = "0") int pageNumber,
+          @RequestParam(defaultValue = "asc") String sortDirection,
+          @RequestParam(required = false) String type) {
 
     Page<AuctionResponse> auctionResponses =
-        auctionService.getAuctions(pageSize, pageNumber, sortDirection, type);
+            auctionService.getAuctions(pageSize, pageNumber, sortDirection, type);
     return ResponseEntity.ok(auctionResponses);
   }
 
@@ -56,27 +58,19 @@ public class AuctionController {
 
   @Operation(summary = "Modify existing auction.")
   @PutMapping("/{id}")
-  public ResponseEntity<?> ModifyAuction(
-      @PathVariable Long id, @RequestBody AuctionRequest auctionRequest) {
+  public ResponseEntity<?> modifyAuction(
+          @PathVariable Long id, @RequestBody AuctionRequest auctionRequest) {
     auctionService.modifyAuction(id, auctionRequest);
-    return ResponseEntity.ok("Auction updated with id +" + id);
+    return ResponseEntity.ok("Auction updated with id " + id);
   }
 
   @Operation(summary = "Upload image.")
   @PostMapping("/{id}/images")
   public ResponseEntity<?> uploadImage(
-      @PathVariable Long id, @RequestParam("file") MultipartFile[] multipartFile) {
+          @PathVariable Long id, @RequestParam("image") MultipartFile[] multipartFiles) {
     Auction auction = auctionService.findById(id);
     Long itemsOfferId = auction.getItemsOffer().getId();
-    List<String> imagesUrls = itemsOfferService.addImage(itemsOfferId, multipartFile);
-    return ResponseEntity.status(HttpStatus.SC_CREATED).body(imagesUrls);
-  }
-
-  @Operation(summary = "Get all images urls.")
-  @GetMapping("/{id}/images")
-  public ResponseEntity<?> downloadImages(@PathVariable Long id) {
-    Auction auction = auctionService.findById(id);
-    Long itemsOfferId = auction.getItemsOffer().getId();
-    return ResponseEntity.ok(itemsOfferService.getAllImagesUrls(itemsOfferId));
+    List<String> imagesUrls = itemsOfferService.addImage(itemsOfferId, multipartFiles);
+    return ResponseEntity.status(HttpStatus.CREATED).body(imagesUrls);
   }
 }
