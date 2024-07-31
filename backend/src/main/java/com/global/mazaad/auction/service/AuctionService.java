@@ -6,6 +6,7 @@ import com.global.mazaad.auction.entity.Auction;
 import com.global.mazaad.auction.exception.AuctionNotFoundException;
 import com.global.mazaad.auction.mapper.AuctionMapper;
 import com.global.mazaad.auction.repository.AuctionRepository;
+import com.global.mazaad.itemsOffer.service.ItemsOfferService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -13,6 +14,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -22,11 +24,17 @@ import java.util.stream.Collectors;
 public class AuctionService {
   private final AuctionRepository auctionRepository;
   private final AuctionMapper auctionMapper;
+  private final ItemsOfferService itemsOfferService;
 
   @Transactional
-  public Long createAuction(AuctionRequest auctionRequest) {
+  public Long createAuction(AuctionRequest auctionRequest, MultipartFile[] multipartFiles) {
     Auction auction = auctionMapper.mapToAuction(auctionRequest);
     auction = auctionRepository.save(auction);
+
+    if (multipartFiles != null) {
+      Long itemsOfferId = auction.getItemsOffer().getId();
+      itemsOfferService.addImage(itemsOfferId, multipartFiles);
+    }
     return auction.getId();
   }
 
