@@ -1,7 +1,6 @@
 package com.global.mazaad.auction.dto;
 
 import com.global.mazaad.bid.dto.BidResponse;
-import com.global.mazaad.itemsOffer.dto.ItemsOfferDto;
 import com.global.mazaad.itemsOffer.dto.ItemsOfferResponseDto;
 import lombok.Getter;
 import lombok.Setter;

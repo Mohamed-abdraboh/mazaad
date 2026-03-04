@@ -3,9 +3,7 @@ package com.global.mazaad.security.config;
 import com.global.mazaad.security.jwt.JwtAuthenticationFilter;
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
-import io.swagger.v3.oas.models.info.Contact;
 import io.swagger.v3.oas.models.info.Info;
-import io.swagger.v3.oas.models.info.License;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +16,7 @@ import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
+import org.springframework.security.config.annotation.web.configurers.AuthorizeHttpRequestsConfigurer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -39,6 +38,10 @@ import java.util.List;
 @EnableMethodSecurity(securedEnabled = true)
 @RequiredArgsConstructor
 public class SecurityConfig {
+  private static final String BEARER_AUTH_SCHEME = "Bearer Authentication";
+  private static final String ROLE_USER = "USER";
+  private static final String ROLE_ADMIN = "ADMIN";
+
   private final FilterChainExceptionHandler filterChainExceptionHandler;
 
   @Bean
@@ -50,24 +53,7 @@ public class SecurityConfig {
         .cors(corsConfig -> corsConfig.configurationSource(corsConfigurationSource()))
         .sessionManagement(
             session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-        .authorizeHttpRequests(
-            authorizeRequests ->
-                authorizeRequests
-                    .requestMatchers(SecurityConstants.USERS_URL)
-                    .authenticated()
-                    .requestMatchers(SecurityConstants.ADMINS_URL)
-                    .authenticated()
-                    .requestMatchers(SecurityConstants.BIDS_URL)
-                    .hasRole("USER")
-                    .requestMatchers(HttpMethod.GET, SecurityConstants.AUCTIONS_URL)
-                    .permitAll()
-                    .requestMatchers(SecurityConstants.AUCTIONS_URL)
-                    .hasRole("ADMIN")
-                    .anyRequest()
-                    .permitAll())
-        .sessionManagement(
-            sessionManagement ->
-                sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+        .authorizeHttpRequests(this::configureAuthorization)
         .addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class)
         .addFilterBefore(filterChainExceptionHandler, JwtAuthenticationFilter.class)
         .build();
@@ -118,9 +104,27 @@ public class SecurityConfig {
   @Bean
   public OpenAPI openAPI() {
     return new OpenAPI()
-        .addSecurityItem(new SecurityRequirement().addList("Bearer Authentication"))
+        .addSecurityItem(new SecurityRequirement().addList(BEARER_AUTH_SCHEME))
         .components(
-            new Components().addSecuritySchemes("Bearer Authentication", createAPIKeyScheme()))
+            new Components().addSecuritySchemes(BEARER_AUTH_SCHEME, createAPIKeyScheme()))
         .info(new Info().title("Mazaad API").version("1.0"));
+  }
+
+  private void configureAuthorization(
+      final AuthorizeHttpRequestsConfigurer<HttpSecurity>.AuthorizationManagerRequestMatcherRegistry
+          authorizeRequests) {
+    authorizeRequests
+        .requestMatchers(SecurityConstants.USERS_URL)
+        .authenticated()
+        .requestMatchers(SecurityConstants.ADMINS_URL)
+        .authenticated()
+        .requestMatchers(SecurityConstants.BIDS_URL)
+        .hasRole(ROLE_USER)
+        .requestMatchers(HttpMethod.GET, SecurityConstants.AUCTIONS_URL)
+        .permitAll()
+        .requestMatchers(SecurityConstants.AUCTIONS_URL)
+        .hasRole(ROLE_ADMIN)
+        .anyRequest()
+        .permitAll();
   }
 }
