@@ -13,6 +13,7 @@ public interface BidResponseMapper {
 
   @Mapping(target = "userName", source = "user.name")
   @Mapping(target = "userId", source = "user.id")
+  @Mapping(target = "phoneNumber", source = "user.phoneNumber")
   BidResponse mapToResponse(Bid bid);
 
   @Named("mapBidListToBidResponseList")
