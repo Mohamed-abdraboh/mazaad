@@ -212,7 +212,7 @@ Swagger UI: `http://localhost:8080/swagger-ui.html`
 ## 📁 Project Structure
 
 ```
-knooze/
+mazaad/
 └── backend/
     ├── src/
     │   └── main/
