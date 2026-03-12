@@ -35,3 +35,6 @@ build/
 .vscode/
 META-INF/MANIFEST.MF
 .32744~
+
+### Docker ###
+.env
