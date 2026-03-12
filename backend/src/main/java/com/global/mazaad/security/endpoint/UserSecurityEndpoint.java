@@ -61,8 +61,7 @@ public class UserSecurityEndpoint {
   public ResponseEntity<UserAuthenticationResponse> authenticate(
       @Valid @RequestBody final UserAuthenticationRequest request) {
 
-    UserAuthenticationResponse authenticationResponse =
-        userAuthenticationService.authenticate(request);
+    UserAuthenticationResponse authenticationResponse = userAuthenticationService.authenticate(request);
 
     return ResponseEntity.ok(authenticationResponse);
   }
@@ -76,15 +75,15 @@ public class UserSecurityEndpoint {
   @PostMapping("/refresh")
   public ResponseEntity<UserAuthenticationResponse> refreshToken() {
     log.info("Received refresh accessToken request for user");
-    UsernamePasswordAuthenticationToken authenticationToken =
-        jwtAuthenticationProvider.get(httpRequest);
-    UserDetails userDetails = userDetailsService.loadUserByUsername(authenticationToken.getName());
-    UserAuthenticationResponse authenticationResponse =
-        userAuthenticationService.authenticate(userDetails, authenticationToken.getName());
-    String token =
-        jwtTokenFromAuthHeaderExtractor.extract(httpRequest.getHeader(HttpHeaders.AUTHORIZATION));
+
+    String token = jwtTokenFromAuthHeaderExtractor.extract(httpRequest.getHeader(HttpHeaders.AUTHORIZATION));
     if (!jwtValidator.isRefresh(token))
       throw new JwtTokenException("Can't refresh with access accessToken");
+
+    UsernamePasswordAuthenticationToken authenticationToken = jwtAuthenticationProvider.get(httpRequest);
+    UserDetails userDetails = userDetailsService.loadUserByUsername(authenticationToken.getName());
+    UserAuthenticationResponse authenticationResponse = userAuthenticationService.authenticate(userDetails,
+        authenticationToken.getName());
 
     jwtBlacklist.addToBlacklist(token);
     log.info("Refresh completed for user");
