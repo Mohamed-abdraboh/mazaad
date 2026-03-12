@@ -25,16 +25,34 @@ public class JwtAuthenticationProvider {
     String jwtToken = jwtTokenFromAuthHeaderExtractor.extract(httpRequest);
 
     jwtValidator.validate(jwtToken);
-    String jwtType = jwtClaimExtractor.extractType(jwtToken);
-    if (jwtType.equals("REFRESH") && !httpRequest.getServletPath().equals("/api/v1/auth/refresh"))
+    boolean isRefreshEndpoint = httpRequest.getServletPath().equals("/api/v1/auth/refresh");
+
+    // Determine token type using the correct key for the endpoint.
+    // On the refresh endpoint the token must be a REFRESH token (verified with
+    // refresh key).
+    // On all other secured endpoints the token must be an ACCESS token (verified
+    // with access key).
+    String jwtType;
+    if (isRefreshEndpoint) {
+      jwtType = jwtClaimExtractor.extractTypeFromRefreshToken(jwtToken);
+    } else {
+      jwtType = jwtClaimExtractor.extractType(jwtToken);
+    }
+
+    if (jwtType.equals("REFRESH") && !isRefreshEndpoint) {
       throw new JwtTokenException("can't access resources with refresh token");
-    final String phoneNumber = jwtClaimExtractor.extractPhoneNumber(jwtToken);
+    }
+
+    final String phoneNumber = isRefreshEndpoint
+        ? jwtClaimExtractor.extractPhoneNumberFromRefreshToken(jwtToken)
+        : jwtClaimExtractor.extractPhoneNumber(jwtToken);
 
     UserDetails userDetails = this.userDetailsService.loadUserByUsername(phoneNumber);
 
-    if (!userDetails.isEnabled()) throw new NotActivatedAccountException(userDetails.getUsername());
-    UsernamePasswordAuthenticationToken authenticationToken =
-        new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+    if (!userDetails.isEnabled())
+      throw new NotActivatedAccountException(userDetails.getUsername());
+    UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(userDetails, null,
+        userDetails.getAuthorities());
     authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(httpRequest));
 
     return authenticationToken;

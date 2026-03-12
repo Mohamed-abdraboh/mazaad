@@ -15,8 +15,11 @@ import org.springframework.stereotype.Service;
 public class JwtClaimExtractor {
   private final JwtSignKeyProvider jwtSignKeyProvider;
 
-  public String extractPhoneNumber(final String jwtToken) {
+  // -----------------------------------------------------------------------
+  // Access-token specific methods — validated against the ACCESS key
+  // -----------------------------------------------------------------------
 
+  public String extractPhoneNumber(final String jwtToken) {
     return extractAllClaims(jwtToken).getSubject();
   }
 
@@ -26,20 +29,49 @@ public class JwtClaimExtractor {
 
   public String extractEmail(final String jwtToken) {
     String userEmail = extractAllClaims(jwtToken).getSubject();
-
-    if (StringUtils.isEmpty(userEmail)) throw new JwtTokenHasNoUserEmailException();
-    else return userEmail;
+    if (StringUtils.isEmpty(userEmail))
+      throw new JwtTokenHasNoUserEmailException();
+    return userEmail;
   }
 
   public Date extractExpirationDate(final String jwtToken) {
     return extractAllClaims(jwtToken).getExpiration();
   }
 
-  private Claims extractAllClaims(final String jwtToken) {
-    return getJwtParser().parseSignedClaims(jwtToken).getPayload();
+  // -----------------------------------------------------------------------
+  // Refresh-token specific methods — validated against the REFRESH key
+  // Using a separate key ensures a stolen refresh token cannot be submitted
+  // as an access token (it would fail signature verification immediately).
+  // -----------------------------------------------------------------------
+
+  public String extractPhoneNumberFromRefreshToken(final String jwtToken) {
+    String subject = extractAllClaimsFromRefreshToken(jwtToken).getSubject();
+    if (StringUtils.isEmpty(subject))
+      throw new JwtTokenHasNoUserEmailException();
+    return subject;
   }
 
-  private JwtParser getJwtParser() {
+  public String extractTypeFromRefreshToken(final String jwtToken) {
+    return extractAllClaimsFromRefreshToken(jwtToken).get("type", String.class);
+  }
+
+  // -----------------------------------------------------------------------
+  // Private helpers
+  // -----------------------------------------------------------------------
+
+  private Claims extractAllClaims(final String jwtToken) {
+    return getAccessJwtParser().parseSignedClaims(jwtToken).getPayload();
+  }
+
+  private Claims extractAllClaimsFromRefreshToken(final String jwtToken) {
+    return getRefreshJwtParser().parseSignedClaims(jwtToken).getPayload();
+  }
+
+  private JwtParser getAccessJwtParser() {
     return Jwts.parser().verifyWith((SecretKey) jwtSignKeyProvider.get()).build();
+  }
+
+  private JwtParser getRefreshJwtParser() {
+    return Jwts.parser().verifyWith((SecretKey) jwtSignKeyProvider.getRefresh()).build();
   }
 }

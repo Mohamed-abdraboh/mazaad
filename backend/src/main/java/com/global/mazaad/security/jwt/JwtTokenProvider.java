@@ -2,7 +2,7 @@ package com.global.mazaad.security.jwt;
 
 import com.global.mazaad.security.exception.JwtTokenException;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -34,11 +34,10 @@ public class JwtTokenProvider {
   private String generateToken(
       final Map<String, Object> extraClaims, final UserDetails userDetails) {
     try {
-      String role =
-          userDetails.getAuthorities().stream()
-              .findFirst()
-              .map(GrantedAuthority::getAuthority)
-              .orElse("ROLE_USER"); // Default role if none found
+      String role = userDetails.getAuthorities().stream()
+          .findFirst()
+          .map(GrantedAuthority::getAuthority)
+          .orElse("ROLE_USER"); // Default role if none found
 
       return Jwts.builder()
           .claims(extraClaims)
@@ -48,7 +47,7 @@ public class JwtTokenProvider {
           .subject(userDetails.getUsername())
           .issuedAt(new Date(System.currentTimeMillis()))
           .expiration(new Date(System.currentTimeMillis() + validityInMilliseconds))
-          .signWith(jwtSignKeyProvider.get(), SignatureAlgorithm.HS256)
+          .signWith(jwtSignKeyProvider.get())
           .compact();
     } catch (Exception exception) {
       log.debug("Jwt accessToken creation error", exception);
@@ -64,7 +63,7 @@ public class JwtTokenProvider {
           .expiration(new Date(System.currentTimeMillis() + validityRefreshTokenInMilliseconds))
           .id(UUID.randomUUID().toString())
           .claim("type", "REFRESH")
-          .signWith(jwtSignKeyProvider.get(), SignatureAlgorithm.HS256)
+          .signWith(jwtSignKeyProvider.getRefresh())
           .compact();
     } catch (Exception exception) {
       log.debug("Jwt refresh token creation error", exception);
