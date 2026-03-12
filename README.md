@@ -159,20 +159,52 @@ whatsapp:
 
 ### Running the Application
 
+#### Option 1: Using Docker (Recommended)
+
+The easiest way to run the application and its database is using Docker Compose.
+
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/Mohamed-abdraboh/mazaad.git
+   cd mazaad
+   ```
+
+2. **Set up Environment Variables**
+   ```bash
+   cp .env.example .env
+   # Edit .env and fill in your AWS, JWT, and WhatsApp credentials
+   ```
+
+3. **Start the Services**
+   ```bash
+   docker compose up -d
+   ```
+
+The application will be available at: `http://localhost:8080`
+Swagger UI: `http://localhost:8080/swagger-ui.html`
+
+To view logs:
 ```bash
-# Clone the repository
-git clone https://github.com/your-username/knooze.git
-cd knooze/backend
-
-# Build the project
-./mvnw clean install
-
-# Run the application
-./mvnw spring-boot:run
+docker compose logs -f app
 ```
 
-The app starts at: `http://localhost:8080`
+To stop the services:
+```bash
+docker compose down
+```
 
+#### Option 2: Running Locally (Manual Setup)
+
+1. **Start PostgreSQL** and ensure it matches the credentials in your `application.yaml`.
+
+2. **Build and Run the Project**
+   ```bash
+   cd backend
+   ./mvnw clean install
+   ./mvnw spring-boot:run
+   ```
+
+The app starts at: `http://localhost:8080`
 Swagger UI: `http://localhost:8080/swagger-ui.html`
 
 ---
